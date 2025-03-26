@@ -32,14 +32,24 @@ func _ready() -> void:
 	sphere.set_surface_override_material(0, _material)
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	
+	# Enable physics
+	freeze = false
+	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	gravity_scale = 0.0
+	collision_layer = 2  # Layer 2 for hand landmarks
+	collision_mask = 1   # Layer 1 for environment/objects
+	contact_monitor = true
+	max_contacts_reported = 4
 
 func _process(_delta: float) -> void:
 	if highlight_touches:
 		_material.albedo_color = Color.RED if _touching_tips > 0 else Color.WHITE
 
 func _physics_process(delta: float) -> void:
-	global_position = lerp(global_position, target, 0.3)
-	#move_and_collide((target - global_position) * delta * 10)
+	# Use move_and_collide instead of direct position setting
+	var direction = (target - global_position)
+	move_and_collide(direction * delta * 10.0)
 
 func is_interaction(lm1: HandLandmark, lm2: HandLandmark) -> bool:
 	if lm1.type != LandmarkType.TIP or lm2.type != LandmarkType.TIP:
