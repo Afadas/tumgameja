@@ -41,6 +41,12 @@ func _ready() -> void:
 	collision_mask = 1   # Layer 1 for environment/objects
 	contact_monitor = true
 	max_contacts_reported = 4
+	
+	# Connect collision signals to player
+	var player = get_node_or_null("/root/World/Player")
+	if player:
+		body_entered.connect(player._on_hand_landmark_body_entered)
+		body_exited.connect(player._on_hand_landmark_body_exited)
 
 func _process(_delta: float) -> void:
 	if highlight_touches:
